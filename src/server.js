@@ -1,1 +1,3 @@
-console.log('hello you scrape');
+require('babel-core/register');
+require('babel-polyfill');
+require('./start');
