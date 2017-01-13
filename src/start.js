@@ -82,9 +82,13 @@ import phantom from 'phantom';
         return document.querySelector('#watch-actions-transcript').innerHTML;
       });
       resolve(x);
-    }, 20000);
+    }, 2000);
   });
 
+
+  await page.evaluate(function() {
+    return document.querySelector('.action-panel-trigger-transcript').click();
+  });
 
   console.log(t);
 
