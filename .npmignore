@@ -1,0 +1,7 @@
+docs/
+example/
+test/
+dump/
+src/
+
+mocha.opts
