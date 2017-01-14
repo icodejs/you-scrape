@@ -20,6 +20,20 @@ export default async function(callback) {
       }
     });
 
+    page.on('onError', function(msg, trace) {
+      let msgStack = ['ERROR: ' + msg];
+
+      if (trace && trace.length) {
+        msgStack.push('TRACE:');
+        trace.forEach(function(t) {
+          msgStack.push(' -> ' + t.file + ': ' + t.line + (t.function ? ' (in function "' + t.function +'")' : ''));
+        });
+      }
+
+      callback(msgStack.join('\n'));
+      return instance.exit();
+    });
+
     const status = await page.open(url);
     console.log('status:', status);
 
@@ -33,10 +47,11 @@ export default async function(callback) {
     // });
 
     await new Promise((resolve) => {
-      setTimeout(async () => resolve(), 5000);
+      setTimeout(async () => resolve(), 10000);
     });
 
     await page.evaluate(function() {
+      document.querySelector('.yt-uix-button-has-icon').click();
       document.querySelector('.action-panel-trigger-transcript').click();
     });
 
