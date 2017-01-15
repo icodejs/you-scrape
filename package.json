@@ -29,6 +29,7 @@
     "phantom": "^4.0.0",
     "request-promise": "^4.1.1",
     "sek": "0.0.1",
+    "striptags": "^2.1.1",
     "xml2js": "^0.4.17"
   },
   "devDependencies": {

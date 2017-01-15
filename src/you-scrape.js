@@ -1,6 +1,7 @@
 import querystring from 'querystring';
 import request from 'request-promise';
 import { parseString } from 'xml2js'
+import striptags from 'striptags';
 import requestTranscriptParams from './request-transcript-params';
 
 const buildTranscriptUrl = ({ url, params }) => {
@@ -38,7 +39,7 @@ const parseXmlToJson = (xml) => {
     } else {
       const transcript = result.transcript.text.map(t => {
         return {
-          description: strip(t._),
+          description: strip(striptags(t._)),
           time: t.$
         }
       });
@@ -68,6 +69,7 @@ const getTranscript = async (videoId) => {
   }
 }
 
-getTranscript('fZKaq623y38');
+// fZKaq623y38
+getTranscript('O14yjsulv7w');
 
 export default getTranscript;
