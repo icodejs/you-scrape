@@ -24,12 +24,12 @@ export default async function(videoId, fn) {
     });
 
     page.on('onError', function(msg, trace) {
-      let msgStack = ['ERROR: ' + msg];
+      let msgStack = [`ERROR: ${msg}`];
 
       if (trace && trace.length) {
         msgStack.push('TRACE:');
         trace.forEach(function(t) {
-          msgStack.push(' -> ' + t.file + ': ' + t.line + (t.function ? ' (in function "' + t.function +'")' : ''));
+          msgStack.push(` -> ${t.file}: ${t.line} ${t.function}`);
         });
       }
 
