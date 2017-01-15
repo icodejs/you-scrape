@@ -25,6 +25,7 @@
   "homepage": "https://github.com/icodejs/you-scrape#readme",
   "dependencies": {
     "lodash": "^4.17.4",
+    "lodash.once": "^4.1.1",
     "phantom": "^4.0.0",
     "sek": "0.0.1"
   },
