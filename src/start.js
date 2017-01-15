@@ -18,7 +18,7 @@ const buildTranscriptUrl = ({ url, params }) => {
       'signature'
     ];
 
-    const transcriptParams = keys.reduce((acc, key) => {
+    const baseParams = keys.reduce((acc, key) => {
       return {
         ...acc,
         ...{ [key]: params[key] }
@@ -26,8 +26,9 @@ const buildTranscriptUrl = ({ url, params }) => {
     }, {});
 
     const trackParams = {
-      ...transcriptParams,
+      ...baseParams,
       ...{
+        type: 'track',
         lang: 'en',
         name: '',
         kind: 'asr',
