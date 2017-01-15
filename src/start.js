@@ -1,4 +1,6 @@
 import querystring from 'querystring';
+import request from 'request-promise';
+import { parseString } from 'xml2js'
 import requestTranscriptParams from './request-transcript-params';
 
 const buildTranscriptUrl = ({ url, params }) => {
@@ -39,6 +41,19 @@ const buildTranscriptUrl = ({ url, params }) => {
 };
 
 requestTranscriptParams('https://youtu.be/fZKaq623y38', (err, params) => {
+  const url = buildTranscriptUrl(params);
+
   console.log(params);
-  console.log(buildTranscriptUrl(params));
+  console.log(url);
+
+  request({ url })
+    .then((xml) => {
+      parseString(xml, (err, result) => {
+        if (err) {
+          return console.log(err);
+        } else {
+          console.log(JSON.stringify(result));
+        }
+      });
+    });
 });

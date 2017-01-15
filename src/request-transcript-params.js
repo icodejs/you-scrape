@@ -1,4 +1,5 @@
 import phantom from 'phantom';
+import sek from 'sek';
 import querystring from 'querystring';
 import once from 'lodash.once';
 
@@ -49,7 +50,7 @@ export default async function(url, fn) {
     // });
 
     await new Promise((resolve) => {
-      setTimeout(async () => resolve(), 10000);
+      setTimeout(async () => resolve(), sek(10));
     });
 
     await page.evaluate(function() {
