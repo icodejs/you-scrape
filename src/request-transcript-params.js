@@ -3,7 +3,7 @@ import sek from 'sek';
 import querystring from 'querystring';
 import once from 'lodash.once';
 
-export default async function(url, fn) {
+export default async function(videoId, fn) {
   const callback = once(fn);
 
   try {
@@ -37,7 +37,7 @@ export default async function(url, fn) {
       return instance.exit();
     });
 
-    const status = await page.open(url);
+    const status = await page.open(`https://youtu.be/${videoId}`);
     console.log('status:', status);
 
     if (status !== 'success') {

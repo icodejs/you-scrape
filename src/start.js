@@ -7,28 +7,26 @@ const buildTranscriptUrl = ({ url, params }) => {
   if (params.type === 'track') {
       return `${url}?${querystring.stringify(params)}`;
   } else {
-    const {
-      sparams,
-      hl,
-      v,
-      expire,
-      caps,
-      key,
-      asr_langs,
-      signature,
-    } = params;
+    const keys = [
+      'sparams',
+      'hl',
+      'v',
+      'expire',
+      'caps',
+      'key',
+      'asr_langs',
+      'signature'
+    ];
+
+    const transcriptParams = keys.reduce((acc, key) => {
+      return {
+        ...acc,
+        ...{ [key]: params[key] }
+      }
+    }, {});
 
     const trackParams = {
-      ...{
-        sparams,
-        hl,
-        v,
-        expire,
-        caps,
-        key,
-        asr_langs,
-        signature,
-      },
+      ...transcriptParams,
       ...{
         lang: 'en',
         name: '',
@@ -36,12 +34,14 @@ const buildTranscriptUrl = ({ url, params }) => {
         fmt: 1
       }
     }
+
     return `${url}?${querystring.stringify(trackParams)}`;
   }
 };
 
-requestTranscriptParams('https://youtu.be/fZKaq623y38', (err, params) => {
+requestTranscriptParams('fZKaq623y38', (err, params) => {
   const url = buildTranscriptUrl(params);
+  const strip = (s) => s.replace(/[\n\r]/g, ' ').replace(/&#39;/g, '\'');
 
   console.log(params);
   console.log(url);
@@ -52,7 +52,13 @@ requestTranscriptParams('https://youtu.be/fZKaq623y38', (err, params) => {
         if (err) {
           return console.log(err);
         } else {
-          console.log(JSON.stringify(result));
+          const transcript = result.transcript.text.map(t => {
+            return {
+              description: strip(t._),
+              time: t.$
+            }
+          });
+          console.log(JSON.stringify(transcript));
         }
       });
     });
