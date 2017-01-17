@@ -110,8 +110,10 @@ exports.default = function () {
                     case 10:
                       status = _context2.sent;
 
+                      console.log('status: ', status);
+
                       if (!(status !== 'success')) {
-                        _context2.next = 14;
+                        _context2.next = 15;
                         break;
                       }
 
@@ -120,8 +122,8 @@ exports.default = function () {
                         v: instance.exit()
                       });
 
-                    case 14:
-                      _context2.next = 16;
+                    case 15:
+                      _context2.next = 17;
                       return new _promise2.default(function (resolve) {
                         setTimeout((0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee() {
                           return _regenerator2.default.wrap(function _callee$(_context) {
@@ -139,18 +141,18 @@ exports.default = function () {
                         })), (0, _sek2.default)(10));
                       });
 
-                    case 16:
-                      _context2.next = 18;
+                    case 17:
+                      _context2.next = 19;
                       return page.evaluate(function () {
                         document.querySelector('.yt-uix-button-has-icon').click();
                         document.querySelector('.action-panel-trigger-transcript').click();
                       });
 
-                    case 18:
+                    case 19:
 
                       instance.exit();
 
-                    case 19:
+                    case 20:
                     case 'end':
                       return _context2.stop();
                   }

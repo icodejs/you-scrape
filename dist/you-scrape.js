@@ -25,6 +25,10 @@ var _extends3 = require('babel-runtime/helpers/extends');
 
 var _extends4 = _interopRequireDefault(_extends3);
 
+require('babel-core/register');
+
+require('babel-polyfill');
+
 var _querystring = require('querystring');
 
 var _querystring2 = _interopRequireDefault(_querystring);

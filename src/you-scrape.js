@@ -1,6 +1,5 @@
-require('babel-core/register');
-require('babel-polyfill');
-
+import 'babel-core/register';
+import 'babel-polyfill';
 import querystring from 'querystring';
 import request from 'request-promise';
 import { parseString } from 'xml2js';

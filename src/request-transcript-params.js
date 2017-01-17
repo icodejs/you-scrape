@@ -38,6 +38,7 @@ export default async function(videoId, fn) {
     });
 
     const status = await page.open(`https://youtu.be/${videoId}`);
+    console.log('status: ', status);
 
     if (status !== 'success') {
       callback(status);
