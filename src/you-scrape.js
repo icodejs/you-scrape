@@ -1,4 +1,3 @@
-import 'babel-core/register';
 import 'babel-polyfill';
 import querystring from 'querystring';
 import request from 'request-promise';

@@ -5,27 +5,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.getTranscript = undefined;
 
-var _regenerator = require('babel-runtime/regenerator');
-
-var _regenerator2 = _interopRequireDefault(_regenerator);
-
-var _asyncToGenerator2 = require('babel-runtime/helpers/asyncToGenerator');
-
-var _asyncToGenerator3 = _interopRequireDefault(_asyncToGenerator2);
-
-var _promise = require('babel-runtime/core-js/promise');
-
-var _promise2 = _interopRequireDefault(_promise);
-
-var _defineProperty2 = require('babel-runtime/helpers/defineProperty');
-
-var _defineProperty3 = _interopRequireDefault(_defineProperty2);
-
-var _extends3 = require('babel-runtime/helpers/extends');
-
-var _extends4 = _interopRequireDefault(_extends3);
-
-require('babel-core/register');
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
 require('babel-polyfill');
 
@@ -49,6 +29,10 @@ var _requestTranscriptParams2 = _interopRequireDefault(_requestTranscriptParams)
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, arguments); return new Promise(function (resolve, reject) { function step(key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { return Promise.resolve(value).then(function (value) { step("next", value); }, function (err) { step("throw", err); }); } } return step("next"); }); }; }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
 var buildTranscriptUrl = function buildTranscriptUrl(_ref) {
   var url = _ref.url,
       params = _ref.params;
@@ -58,7 +42,7 @@ var buildTranscriptUrl = function buildTranscriptUrl(_ref) {
   }
 
   var trackParams = ['sparams', 'hl', 'v', 'expire', 'caps', 'key', 'asr_langs', 'signature'].reduce(function (acc, key) {
-    return (0, _extends4.default)({}, acc, (0, _defineProperty3.default)({}, key, params[key]));
+    return _extends({}, acc, _defineProperty({}, key, params[key]));
   }, {
     type: 'track',
     lang: 'en',
@@ -74,7 +58,7 @@ var parseXmlToJson = function parseXmlToJson(xml) {
   var strip = function strip(s) {
     return s.replace(/[\n\r]/g, ' ').replace(/&#39;/g, '\'');
   };
-  return new _promise2.default(function (resolve, reject) {
+  return new Promise(function (resolve, reject) {
     return (0, _xml2js.parseString)(xml, function (err, result) {
       if (err) {
         return reject(err);
@@ -92,7 +76,7 @@ var parseXmlToJson = function parseXmlToJson(xml) {
 };
 
 var getParams = function getParams(videoId) {
-  return new _promise2.default(function (resolve, reject) {
+  return new Promise(function (resolve, reject) {
     return (0, _requestTranscriptParams2.default)(videoId, function (err, params) {
       if (err) {
         return reject(err);
@@ -103,9 +87,9 @@ var getParams = function getParams(videoId) {
 };
 
 var getTranscript = exports.getTranscript = function () {
-  var _ref2 = (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee(videoId) {
+  var _ref2 = _asyncToGenerator(regeneratorRuntime.mark(function _callee(videoId) {
     var params, url, xml;
-    return _regenerator2.default.wrap(function _callee$(_context) {
+    return regeneratorRuntime.wrap(function _callee$(_context) {
       while (1) {
         switch (_context.prev = _context.next) {
           case 0:
