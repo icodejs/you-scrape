@@ -9,13 +9,14 @@ export default async function(videoId, fn) {
   try {
     const instance = await phantom.create();
     const page = await instance.createPage();
+    const pageUrl = `https://youtu.be/${videoId}`;
 
     page.on('onResourceRequested', function(requestData) {
       const { url: transcriptUrl } = requestData;
       if (transcriptUrl.indexOf('timedtext') > -1) {
         const [ domain, qstring ] = transcriptUrl.split('?');
         const params = querystring.parse(qstring);
-
+        console.log('transcript resource found:', transcriptUrl);
         callback(null, {
           url: domain,
           params
@@ -37,8 +38,8 @@ export default async function(videoId, fn) {
       return instance.exit();
     });
 
-    const status = await page.open(`https://youtu.be/${videoId}`);
-    console.log('status: ', status);
+    const status = await page.open(pageUrl);
+    console.log('status:', status, pageUrl);
 
     if (status !== 'success') {
       callback(status);

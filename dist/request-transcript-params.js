@@ -41,7 +41,7 @@ exports.default = function () {
             callback = (0, _lodash2.default)(fn);
             _context3.prev = 1;
             return _context3.delegateYield(regeneratorRuntime.mark(function _callee2() {
-              var instance, page, status;
+              var instance, page, pageUrl, status;
               return regeneratorRuntime.wrap(function _callee2$(_context2) {
                 while (1) {
                   switch (_context2.prev = _context2.next) {
@@ -56,6 +56,7 @@ exports.default = function () {
 
                     case 5:
                       page = _context2.sent;
+                      pageUrl = 'https://youtu.be/' + videoId;
 
 
                       page.on('onResourceRequested', function (requestData) {
@@ -68,7 +69,7 @@ exports.default = function () {
                               qstring = _transcriptUrl$split2[1];
 
                           var params = _querystring2.default.parse(qstring);
-
+                          console.log('transcript resource found:', transcriptUrl);
                           callback(null, {
                             url: domain,
                             params: params
@@ -90,16 +91,16 @@ exports.default = function () {
                         return instance.exit();
                       });
 
-                      _context2.next = 10;
-                      return page.open('https://youtu.be/' + videoId);
+                      _context2.next = 11;
+                      return page.open(pageUrl);
 
-                    case 10:
+                    case 11:
                       status = _context2.sent;
 
-                      console.log('status: ', status);
+                      console.log('status:', status, pageUrl);
 
                       if (!(status !== 'success')) {
-                        _context2.next = 15;
+                        _context2.next = 16;
                         break;
                       }
 
@@ -108,8 +109,8 @@ exports.default = function () {
                         v: instance.exit()
                       });
 
-                    case 15:
-                      _context2.next = 17;
+                    case 16:
+                      _context2.next = 18;
                       return new Promise(function (resolve) {
                         setTimeout(_asyncToGenerator(regeneratorRuntime.mark(function _callee() {
                           return regeneratorRuntime.wrap(function _callee$(_context) {
@@ -127,18 +128,18 @@ exports.default = function () {
                         })), (0, _sek2.default)(10));
                       });
 
-                    case 17:
-                      _context2.next = 19;
+                    case 18:
+                      _context2.next = 20;
                       return page.evaluate(function () {
                         document.querySelector('.yt-uix-button-has-icon').click();
                         document.querySelector('.action-panel-trigger-transcript').click();
                       });
 
-                    case 19:
+                    case 20:
 
                       instance.exit();
 
-                    case 20:
+                    case 21:
                     case 'end':
                       return _context2.stop();
                   }
