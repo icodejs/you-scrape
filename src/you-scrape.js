@@ -1,12 +1,15 @@
+require('babel-core/register');
+require('babel-polyfill');
+
 import querystring from 'querystring';
 import request from 'request-promise';
-import { parseString } from 'xml2js'
+import { parseString } from 'xml2js';
 import striptags from 'striptags';
 import requestTranscriptParams from './request-transcript-params';
 
 const buildTranscriptUrl = ({ url, params }) => {
   if (params.type === 'track') {
-      return `${url}?${querystring.stringify(params)}`;
+    return `${url}?${querystring.stringify(params)}`;
   }
 
   const trackParams = [
@@ -39,14 +42,14 @@ const parseXmlToJson = (xml) => {
     } else {
       const transcript = result.transcript.text.map(t => {
         return {
-          description: strip(striptags(t._)),
+          text: strip(striptags(t._)),
           time: t.$
-        }
+        };
       });
       resolve(transcript);
     }
   }));
-}
+};
 
 const getParams = (videoId) => {
   return new Promise((resolve, reject) => requestTranscriptParams(videoId, (err, params) => {
@@ -55,21 +58,11 @@ const getParams = (videoId) => {
     }
     resolve(params);
   }));
-}
+};
 
-const getTranscript = async (videoId) => {
-  try {
-    const params = await getParams(videoId)
-    const url = await buildTranscriptUrl(params);
-    const xml = await request({ url });
-    const transcriptJson = await parseXmlToJson(xml);
-    console.log(JSON.stringify(transcriptJson));
-  } catch(e) {
-    console.error(e)
-  }
-}
-
-// fZKaq623y38
-getTranscript('O14yjsulv7w');
-
-export default getTranscript;
+export const getTranscript = async (videoId) => {
+  const params = await getParams(videoId);
+  const url = await buildTranscriptUrl(params);
+  const xml = await request({ url });
+  return await parseXmlToJson(xml);
+};

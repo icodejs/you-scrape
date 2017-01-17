@@ -38,16 +38,11 @@ export default async function(videoId, fn) {
     });
 
     const status = await page.open(`https://youtu.be/${videoId}`);
-    console.log('status:', status);
 
     if (status !== 'success') {
       callback(status);
       return instance.exit();
     }
-
-    // await page.evaluate(function() {
-    //   document.querySelector('.action-panel-trigger-transcript').click();
-    // });
 
     await new Promise((resolve) => {
       setTimeout(async () => resolve(), sek(10));
