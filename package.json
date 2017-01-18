@@ -15,6 +15,9 @@
     "type": "git",
     "url": "git+https://github.com/icodejs/you-scrape.git"
   },
+  "files": [
+    "dist"
+  ],
   "keywords": [
     "scrape",
     "youtube"
