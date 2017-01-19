@@ -6,6 +6,7 @@
   "main": "dist/you-scrape.js",
   "scripts": {
     "start": "node ./example/index",
+    "build:start": "npm run release && node ./example/index",
     "test": "echo \"Error: no test specified\" && exit 1",
     "reinstall": "rm -rf ./node_modules/ && npm install",
     "lint": "./node_modules/.bin/eslint ./src",
