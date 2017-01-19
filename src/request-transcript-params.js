@@ -5,6 +5,31 @@ import sek from 'sek';
 import querystring from 'querystring';
 import once from 'lodash.once';
 
+const onResourceRequested = (callback) => (requestData) => {
+  const { url: transcriptUrl } = requestData;
+
+  if (transcriptUrl.indexOf('timedtext') > -1) {
+    const [ domain, qstring ] = transcriptUrl.split('?');
+    const params = querystring.parse(qstring);
+
+    console.log('transcript resource found:', transcriptUrl);
+    callback(null, { url: domain, params });
+  }
+};
+
+const onError = (callback) => (msg, trace) => {
+  let msgStack = [`ERROR: ${msg}`];
+
+  if (trace && trace.length) {
+    msgStack.push('TRACE:');
+    trace.forEach(function(t) {
+      msgStack.push(` -> ${t.file}: ${t.line} ${t.function}`);
+    });
+  }
+
+  callback(msgStack.join('\n'));
+};
+
 export default async function(videoId, fn) {
   const instance = await phantom.create();
   const page = await instance.createPage();
@@ -15,35 +40,8 @@ export default async function(videoId, fn) {
   });
 
   try {
-    page.on('onResourceRequested', function(requestData) {
-      const { url: transcriptUrl } = requestData;
-
-      if (transcriptUrl.indexOf('timedtext') > -1) {
-        const [ domain, qstring ] = transcriptUrl.split('?');
-        const params = querystring.parse(qstring);
-
-        console.log('transcript resource found:', transcriptUrl);
-
-        callback(null, {
-          url: domain,
-          params
-        });
-      }
-    });
-
-    page.on('onError', function(msg, trace) {
-      let msgStack = [`ERROR: ${msg}`];
-
-      if (trace && trace.length) {
-        msgStack.push('TRACE:');
-        trace.forEach(function(t) {
-          msgStack.push(` -> ${t.file}: ${t.line} ${t.function}`);
-        });
-      }
-
-      callback(msgStack.join('\n'));
-      return instance.exit();
-    });
+    page.on('onResourceRequested', onResourceRequested(callback));
+    page.on('onError', onError(callback));
 
     page.open(pageUrl).then((status) => {
       console.log('status:', status, pageUrl);
@@ -58,7 +56,8 @@ export default async function(videoId, fn) {
           document.querySelector('.action-panel-trigger-transcript').click();
         });
       }, sek(10));
-    });
+    })
+    .catch(callback);
   } catch (e) {
     callback(e);
   }

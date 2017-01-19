@@ -4,7 +4,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"]) _i["return"](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError("Invalid attempt to destructure non-iterable instance"); } }; }();
+var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"]) _i["return"](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError("Invalid attempt to destructure non-iterable instance"); } }; }(); /* eslint-disable no-console */
 
 var _phantom = require('phantom');
 
@@ -24,7 +24,41 @@ var _lodash2 = _interopRequireDefault(_lodash);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, arguments); return new Promise(function (resolve, reject) { function step(key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { return Promise.resolve(value).then(function (value) { step("next", value); }, function (err) { step("throw", err); }); } } return step("next"); }); }; } /* eslint-disable no-console */
+function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, arguments); return new Promise(function (resolve, reject) { function step(key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { return Promise.resolve(value).then(function (value) { step("next", value); }, function (err) { step("throw", err); }); } } return step("next"); }); }; }
+
+var onResourceRequested = function onResourceRequested(callback) {
+  return function (requestData) {
+    var transcriptUrl = requestData.url;
+
+
+    if (transcriptUrl.indexOf('timedtext') > -1) {
+      var _transcriptUrl$split = transcriptUrl.split('?'),
+          _transcriptUrl$split2 = _slicedToArray(_transcriptUrl$split, 2),
+          domain = _transcriptUrl$split2[0],
+          qstring = _transcriptUrl$split2[1];
+
+      var params = _querystring2.default.parse(qstring);
+
+      console.log('transcript resource found:', transcriptUrl);
+      callback(null, { url: domain, params: params });
+    }
+  };
+};
+
+var onError = function onError(callback) {
+  return function (msg, trace) {
+    var msgStack = ['ERROR: ' + msg];
+
+    if (trace && trace.length) {
+      msgStack.push('TRACE:');
+      trace.forEach(function (t) {
+        msgStack.push(' -> ' + t.file + ': ' + t.line + ' ' + t.function);
+      });
+    }
+
+    callback(msgStack.join('\n'));
+  };
+};
 
 exports.default = function () {
   var _ref = _asyncToGenerator(regeneratorRuntime.mark(function _callee(videoId, fn) {
@@ -51,40 +85,8 @@ exports.default = function () {
 
 
             try {
-              page.on('onResourceRequested', function (requestData) {
-                var transcriptUrl = requestData.url;
-
-
-                if (transcriptUrl.indexOf('timedtext') > -1) {
-                  var _transcriptUrl$split = transcriptUrl.split('?'),
-                      _transcriptUrl$split2 = _slicedToArray(_transcriptUrl$split, 2),
-                      domain = _transcriptUrl$split2[0],
-                      qstring = _transcriptUrl$split2[1];
-
-                  var params = _querystring2.default.parse(qstring);
-
-                  console.log('transcript resource found:', transcriptUrl);
-
-                  callback(null, {
-                    url: domain,
-                    params: params
-                  });
-                }
-              });
-
-              page.on('onError', function (msg, trace) {
-                var msgStack = ['ERROR: ' + msg];
-
-                if (trace && trace.length) {
-                  msgStack.push('TRACE:');
-                  trace.forEach(function (t) {
-                    msgStack.push(' -> ' + t.file + ': ' + t.line + ' ' + t.function);
-                  });
-                }
-
-                callback(msgStack.join('\n'));
-                return instance.exit();
-              });
+              page.on('onResourceRequested', onResourceRequested(callback));
+              page.on('onError', onError(callback));
 
               page.open(pageUrl).then(function (status) {
                 console.log('status:', status, pageUrl);
@@ -99,7 +101,7 @@ exports.default = function () {
                     document.querySelector('.action-panel-trigger-transcript').click();
                   });
                 }, (0, _sek2.default)(10));
-              });
+              }).catch(callback);
             } catch (e) {
               callback(e);
             }
